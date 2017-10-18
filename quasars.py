@@ -100,20 +100,16 @@ def split(full, wavelengths):
     return left, right
 
 def dist(a, b):
-    dist = 0
-
-    for i in range(len(a)):
-        dist += (a[i] - b[i])**2
-
-    return dist
+    return np.sum((a-b)**2)
 
 def calc_dists(spectra_train, spectra_test):
-    m = spectra.shape[0]
-    dists = np.zeros((m,m))
-    for i in range(m):
-        a = spectra[i]
-        for j in range(m):
-            b = spectra[j]
+    mtrain = spectra_train.shape[0]
+    mtest = spectra_test.shape[0]
+    dists = np.zeros((mtest, mtrain))
+    for i in range(mtest):
+        a = spectra_test[i]
+        for j in range(mtrain):
+            b = spectra_train[j]
             dists[i,j] = dist(a, b)
     return dists
 
@@ -126,29 +122,37 @@ def get_h(index, dists):
 def ker(t):
     return np.max(t-1, 0)
 
-def fhat_left(smoothed_spectra, test_right):
+def fhat_left(smoothed_spectra, smoothed_test):
     rights = smoothed_spectra[:, 150:450]
+    test_rights = smoothed_test[:, 150:450]
     lefts = smoothed_spectra[:, 0:50]
-    r_dists = calc_dists(rights)
-    m = smoothed_spectra.shape[0]
-    n = smoothed_spectra.shape[1]
-    lefthats = np.zeros((m,50))
-    errors = np.zeros(m)
-    # go through all training examples
-    for i in range(m):
-        # for each neighbor
+    test_lefts = smoothed_spectra[:, 0:50]
+    
+    r_dists = calc_dists(rights, test_rights)
+    
+    mtest = smoothed_test.shape[0]
+    
+    lefthats = np.zeros((mtest,50)) ##50 lambdas in left
+    errors = np.zeros(mtest)
+    
+    # go through all test examples
+    for i in range(mtest):
+        # for each neighbor from training set
         top_f_left = 0
         bottom_f_left = 0
         h = get_h(i, r_dists)
+        
         for n_index in k_neighbors(i, r_dists, 3):
             nl = lefts[n_index]
             d = r_dists[i, n_index]
             k_score = ker(d/h)
             top_f_left += k_score*nl
             bottom_f_left += k_score
+        
         fhat_i = top_f_left/bottom_f_left
         lefthats[i] = fhat_i
-        errors[i] = dist(lefts[i], fhat_i)
+        errors[i] = dist(test_lefts[i], fhat_i)
+
     mean_error = np.mean(errors)
     return lefthats, mean_error
 
