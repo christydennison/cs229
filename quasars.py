@@ -83,14 +83,16 @@ def plot_b(X, raw_Y, Ys, desc, filename):
     plt.show()
     #plt.savefig(filename)
 
-def plot_c(Yhat, Y, X, filename):
+def plot_c(X, smooth_y, Yhats, desc, filename):
     plt.figure()
-    ############
-
-
-    #############
-    plt.savefig(filename)
-    return
+    plt.ylabel('Flux')
+    plt.xlabel('Wavelengths')
+    plt.plot(X, smooth_y)
+    plt.plot(X[0:50], Yhats, c='r', linewidth=2.0)
+    #plt.plot(X, np.asarray(Ys).reshape((X.shape[0],1)), c='r', linewidth=2.0)
+    plt.suptitle(desc)
+    plt.show()
+    #plt.savefig(filename)
 
 def split(full, wavelengths):
     left, right = None, None
