@@ -1,8 +1,7 @@
+from __future__ import division
 import numpy as np
 import matplotlib as mpl
-mpl.use('Agg')
 import matplotlib.pyplot as plt
-from __future__ import division
 
 
 def load_data():
