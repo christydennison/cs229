@@ -72,34 +72,23 @@ def LR_smooth(Y, X_):
     yhat = np.dot(X, theta)
     return yhat, theta
 
-def plot_b(X, raw_Y, Ys, desc, filename):
+def plot_b(X, raw_Y, Ys, desc):
     plt.figure()
     plt.ylabel('Flux')
     plt.xlabel('Wavelengths')
     plt.scatter(X, raw_Y)
     plt.plot(X, Ys, c='r', linewidth=2.0)
-    #plt.plot(X, np.asarray(Ys).reshape((X.shape[0],1)), c='r', linewidth=2.0)
     plt.suptitle(desc)
     plt.show()
-    #plt.savefig(filename)
 
-def plot_c(X, smooth_y, Yhats, desc, filename):
+def plot_c(X, smooth_y, Yhats, desc):
     plt.figure()
     plt.ylabel('Flux')
     plt.xlabel('Wavelengths')
     plt.plot(X, smooth_y)
     plt.plot(X[0:50], Yhats, c='r', linewidth=2.0)
-    #plt.plot(X, np.asarray(Ys).reshape((X.shape[0],1)), c='r', linewidth=2.0)
     plt.suptitle(desc)
     plt.show()
-    #plt.savefig(filename)
-
-def split(full, wavelengths):
-    left, right = None, None
-    ###############
-
-    ###############
-    return left, right
 
 def dist(a, b):
     return np.sum((a-b)**2)
@@ -157,13 +146,4 @@ def fhat_left(smoothed_spectra, smoothed_test):
 
     mean_error = np.mean(errors)
     return lefthats, mean_error
-
-def func_reg(left_train, right_train, right_test):
-    m, n = left_train.shape
-    lefthat = np.zeros(m)
-    ###########################
-
-
-    ###########################
-    return lefthat
 
